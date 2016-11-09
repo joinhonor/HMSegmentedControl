@@ -82,6 +82,11 @@ typedef NS_ENUM(NSInteger, HMSegmentedControlType) {
 @property (nonatomic, strong) NSDictionary *selectedTitleTextAttributes UI_APPEARANCE_SELECTOR;
 
 /**
+ Text attributes to apply to item badge.
+ */
+@property (nonatomic, strong) NSDictionary *badgeAttributes UI_APPEARANCE_SELECTOR;
+
+/**
  Segmented control background color.
  
  Default is `[UIColor whiteColor]`
@@ -228,11 +233,19 @@ typedef NS_ENUM(NSInteger, HMSegmentedControlType) {
  */
 @property (nonatomic) BOOL shouldAnimateUserSelection;
 
+/**
+ Badge background color.
+
+ Default is `[UIColor redColor]`
+ */
+@property (nonatomic, strong) UIColor *badgeBackgroundColor;
+
 - (id)initWithSectionTitles:(NSArray *)sectiontitles;
 - (id)initWithSectionImages:(NSArray *)sectionImages sectionSelectedImages:(NSArray *)sectionSelectedImages;
 - (instancetype)initWithSectionImages:(NSArray *)sectionImages sectionSelectedImages:(NSArray *)sectionSelectedImages titlesForSections:(NSArray *)sectiontitles;
 - (void)setSelectedSegmentIndex:(NSUInteger)index animated:(BOOL)animated;
 - (void)setIndexChangeBlock:(IndexChangeBlock)indexChangeBlock;
 - (void)setTitleFormatter:(HMTitleFormatterBlock)titleFormatter;
+- (void)setBadgeValue:(NSString *)value forSection:(int)section;
 
 @end

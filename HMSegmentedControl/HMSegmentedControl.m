@@ -21,6 +21,7 @@
 @property (nonatomic, readwrite) CGFloat segmentWidth;
 @property (nonatomic, readwrite) NSArray *segmentWidthsArray;
 @property (nonatomic, strong) HMScrollView *scrollView;
+@property (nonatomic, strong) NSArray *badges;
 
 @end
 
@@ -149,6 +150,8 @@
     _verticalDividerColor = [UIColor blackColor];
     self.borderColor = [UIColor blackColor];
     self.borderWidth = 1.0f;
+    self.badgeBackgroundColor = [UIColor redColor];
+    self.badges = [NSArray array];
     
     self.shouldAnimateUserSelection = YES;
     
@@ -214,6 +217,41 @@
 - (void)setBorderType:(HMSegmentedControlBorderType)borderType {
     _borderType = borderType;
     [self setNeedsDisplay];
+}
+
+- (void)setBadges:(NSMutableArray *)badges {
+    _badges = badges;
+    [self setNeedsDisplay];
+}
+
+- (void)setBadgeBackgroundColor:(UIColor *)badgeBackgroundColor {
+    _badgeBackgroundColor = badgeBackgroundColor;
+    [self setNeedsDisplay];
+}
+
+- (void)setBadgeValue:(NSString *)value forSection:(int)section {
+    NSUInteger capacity = MAX(self.badges.count, section + 1);
+    NSMutableArray *newBadges = [NSMutableArray arrayWithCapacity:capacity];
+
+    if (self.badges.count == capacity) {
+        for (int i = 0; i < capacity; i++) {
+            [newBadges addObject:self.badges[i]];
+        }
+    } else {
+        for (int i = 0; i < capacity; i++) {
+            [newBadges addObject:[NSNull null]];
+        }
+        for (int i = 0; i < self.badges.count; i++) {
+            [newBadges replaceObjectAtIndex:i withObject:self.badges[i]];
+        }
+    }
+
+    if (value == nil) {
+        value = (NSString *)[NSNull null];
+    }
+
+    [newBadges replaceObjectAtIndex:section withObject:value];
+    self.badges = [newBadges copy];
 }
 
 #pragma mark - Drawing
@@ -333,7 +371,32 @@
             titleLayer.contentsScale = [[UIScreen mainScreen] scale];
             
             [self.scrollView.layer addSublayer:titleLayer];
-            
+
+            // Badge
+            if (self.badges[idx] != [NSNull null]) {
+                CGFloat widthPadding = 3.0;
+                CGFloat heightPadding = 3.0;
+                CGFloat spaceBetweenTitleAndBadge = 8.0;
+                NSString *badge = self.badges[idx];
+                CGSize badgeSize = [badge sizeWithAttributes:[self resultingBadgeAttributes]];
+                badgeSize.width = MAX(badgeSize.width, badgeSize.height);
+                CALayer *badgeContainer = [CALayer layer];
+                CGFloat y = roundf((CGRectGetHeight(self.frame) - selectionStyleNotBox * self.selectionIndicatorHeight) / 2 - (badgeSize.height + heightPadding) / 2 + self.selectionIndicatorHeight * locationUp);
+                badgeContainer.frame = CGRectMake(CGRectGetMaxX(titleLayer.frame) + spaceBetweenTitleAndBadge, y, badgeSize.width + widthPadding, badgeSize.height + heightPadding);
+                badgeContainer.cornerRadius = MIN(badgeContainer.frame.size.width, badgeContainer.frame.size.height) / 2.0;
+                badgeContainer.masksToBounds = YES;
+                badgeContainer.backgroundColor = self.badgeBackgroundColor.CGColor;
+                [self.scrollView.layer addSublayer:badgeContainer];
+
+                CATextLayer *badgeLayer = [CATextLayer layer];
+                badgeLayer.frame = CGRectMake(widthPadding / 2.0, heightPadding / 2.0, badgeSize.width, badgeSize.height);
+                badgeLayer.alignmentMode = kCAAlignmentCenter;
+                badgeLayer.string = [[NSAttributedString alloc] initWithString:badge attributes:[self resultingBadgeAttributes]];
+                badgeLayer.contentsScale = [[UIScreen mainScreen] scale];
+
+                [badgeContainer addSublayer:badgeLayer];
+            }
+
             // Vertical Divider
             if (self.isVerticalDividerEnabled && idx > 0) {
                 CALayer *verticalDividerLayer = [CALayer layer];
@@ -896,6 +959,21 @@
         [resultingAttrs addEntriesFromDictionary:self.selectedTitleTextAttributes];
     }
     
+    return [resultingAttrs copy];
+}
+
+- (NSDictionary *)resultingBadgeAttributes {
+    NSDictionary *defaults = @{
+        NSFontAttributeName : [UIFont systemFontOfSize:14.0f],
+        NSForegroundColorAttributeName : [UIColor whiteColor],
+    };
+
+    NSMutableDictionary *resultingAttrs = [NSMutableDictionary dictionaryWithDictionary:defaults];
+
+    if (self.badgeAttributes) {
+        [resultingAttrs addEntriesFromDictionary:self.badgeAttributes];
+    }
+
     return [resultingAttrs copy];
 }
 
