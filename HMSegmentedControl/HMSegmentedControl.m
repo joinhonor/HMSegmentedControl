@@ -373,7 +373,7 @@
             [self.scrollView.layer addSublayer:titleLayer];
 
             // Badge
-            if (self.badges[idx] != [NSNull null]) {
+            if (self.badges.count > idx && self.badges[idx] != [NSNull null]) {
                 CGFloat widthPadding = 3.0;
                 CGFloat heightPadding = 3.0;
                 CGFloat spaceBetweenTitleAndBadge = 8.0;
