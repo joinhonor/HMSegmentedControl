@@ -373,14 +373,17 @@
             [self.scrollView.layer addSublayer:titleLayer];
 
             // Badge
+            CALayer *badgeContainer = [CALayer layer];
+            CGFloat spaceBetweenTitleAndBadge = 8.0;
             if (self.badges.count > idx && self.badges[idx] != [NSNull null]) {
-                CGFloat widthPadding = 3.0;
-                CGFloat heightPadding = 3.0;
+                CGFloat heightPadding = 2.0;
                 CGFloat spaceBetweenTitleAndBadge = 8.0;
                 NSString *badge = self.badges[idx];
                 CGSize badgeSize = [badge sizeWithAttributes:[self resultingBadgeAttributes]];
-                badgeSize.width = MAX(badgeSize.width, badgeSize.height);
-                CALayer *badgeContainer = [CALayer layer];
+                // If text is narrower than tall, don't add any extra padding (because we'll expand width to make it square). If it's wider than tall, do add some.
+                CGFloat widthPadding = badgeSize.width < badgeSize.height ? 0 : 3.0;
+                badgeSize.width = MAX(badgeSize.width + widthPadding, badgeSize.height + heightPadding);
+
                 CGFloat y = roundf((CGRectGetHeight(self.frame) - selectionStyleNotBox * self.selectionIndicatorHeight) / 2 - (badgeSize.height + heightPadding) / 2 + self.selectionIndicatorHeight * locationUp);
                 badgeContainer.frame = CGRectMake(CGRectGetMaxX(titleLayer.frame) + spaceBetweenTitleAndBadge, y, badgeSize.width + widthPadding, badgeSize.height + heightPadding);
                 badgeContainer.cornerRadius = MIN(badgeContainer.frame.size.width, badgeContainer.frame.size.height) / 2.0;
@@ -396,6 +399,11 @@
 
                 [badgeContainer addSublayer:badgeLayer];
             }
+
+            // Move frames to account for badge (if necessary)
+            CGFloat dx = badgeContainer.frame.size.width > 0 ? -(badgeContainer.frame.size.width + spaceBetweenTitleAndBadge) / 2.0 : 0;
+            titleLayer.frame = CGRectOffset(titleLayer.frame, dx, 0);
+            badgeContainer.frame = CGRectOffset(badgeContainer.frame, dx, 0);
 
             // Vertical Divider
             if (self.isVerticalDividerEnabled && idx > 0) {
