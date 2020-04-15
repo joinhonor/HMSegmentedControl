@@ -240,6 +240,13 @@ typedef NS_ENUM(NSInteger, HMSegmentedControlType) {
  */
 @property (nonatomic, strong) UIColor *badgeBackgroundColor;
 
+/**
+ Badge Y offset from its current position
+ 
+ Default offset is 0
+ */
+@property (nonatomic, readwrite) CGFloat badgeYOffset;
+
 - (id)initWithSectionTitles:(NSArray *)sectiontitles;
 - (id)initWithSectionImages:(NSArray *)sectionImages sectionSelectedImages:(NSArray *)sectionSelectedImages;
 - (instancetype)initWithSectionImages:(NSArray *)sectionImages sectionSelectedImages:(NSArray *)sectionSelectedImages titlesForSections:(NSArray *)sectiontitles;

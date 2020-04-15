@@ -152,7 +152,8 @@
     self.borderWidth = 1.0f;
     self.badgeBackgroundColor = [UIColor redColor];
     self.badges = [NSArray array];
-    
+    self.badgeYOffset = 0;
+
     self.shouldAnimateUserSelection = YES;
     
     self.selectionIndicatorArrowLayer = [CALayer layer];
@@ -161,7 +162,7 @@
     self.selectionIndicatorBoxLayer.opacity = self.selectionIndicatorBoxOpacity;
     self.selectionIndicatorBoxLayer.borderWidth = 1.0f;
     self.selectionIndicatorBoxOpacity = 0.2;
-    
+
     self.contentMode = UIViewContentModeRedraw;
 }
 
@@ -226,6 +227,11 @@
 
 - (void)setBadgeBackgroundColor:(UIColor *)badgeBackgroundColor {
     _badgeBackgroundColor = badgeBackgroundColor;
+    [self setNeedsDisplay];
+}
+
+- (void)setBadgeYOffset:(CGFloat)badgeYPadding {
+    _badgeYOffset = badgeYPadding;
     [self setNeedsDisplay];
 }
 
@@ -385,7 +391,7 @@
                 badgeSize.width = MAX(badgeSize.width + widthPadding, badgeSize.height + heightPadding);
 
                 CGFloat y = roundf((CGRectGetHeight(self.frame) - selectionStyleNotBox * self.selectionIndicatorHeight) / 2 - (badgeSize.height + heightPadding) / 2 + self.selectionIndicatorHeight * locationUp);
-                badgeContainer.frame = CGRectMake(CGRectGetMaxX(titleLayer.frame) + spaceBetweenTitleAndBadge, y, badgeSize.width + widthPadding, badgeSize.height + heightPadding);
+                badgeContainer.frame = CGRectMake(CGRectGetMaxX(titleLayer.frame) + spaceBetweenTitleAndBadge, y + self.badgeYOffset, badgeSize.width + widthPadding, badgeSize.height + heightPadding);
                 badgeContainer.cornerRadius = MIN(badgeContainer.frame.size.width, badgeContainer.frame.size.height) / 2.0;
                 badgeContainer.masksToBounds = YES;
                 badgeContainer.backgroundColor = self.badgeBackgroundColor.CGColor;
