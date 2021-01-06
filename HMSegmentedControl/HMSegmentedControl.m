@@ -801,12 +801,16 @@
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+
+    // Hide pressed down state - in case the touch ended on another segment,
+    // hide all the touch down indicators.
+    [self.touchDownIndicatorLayers enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [obj setOpacity: 0.0];
+    }];
+
     UITouch *touch = [touches anyObject];
     // Get the index of the selected segment
     NSInteger segment = [self calculateSelectedSegmentPosition:touch];
-
-    // Hide pressed down state
-    [self.touchDownIndicatorLayers[segment] setOpacity: 0.0];
 
     if (segment != -1) {
         NSUInteger sectionsCount = 0;
