@@ -274,6 +274,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -460,6 +461,7 @@
 				INFOPLIST_FILE = "$(SRCROOT)/Framework/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MARKETING_VERSION = 1.5.4;
 				MODULEMAP_FILE = Framework/module.modulemap;
 				PRODUCT_BUNDLE_IDENTIFIER = com.heshammegid.HMSegmentedControl;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -479,6 +481,7 @@
 				INFOPLIST_FILE = "$(SRCROOT)/Framework/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MARKETING_VERSION = 1.5.4;
 				MODULEMAP_FILE = Framework/module.modulemap;
 				PRODUCT_BUNDLE_IDENTIFIER = com.heshammegid.HMSegmentedControl;
 				PRODUCT_NAME = "$(TARGET_NAME)";
