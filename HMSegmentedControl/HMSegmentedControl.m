@@ -325,6 +325,8 @@
 
     // Remove all sublayers to avoid drawing images over existing ones
     self.scrollView.layer.sublayers = nil;
+    // Reset touch indicators layers array
+    [self.touchDownIndicatorLayers removeAllObjects];
 
     CGRect oldRect = rect;
 
@@ -600,7 +602,7 @@
 - (void)addTouchDownLayerStyling:(CALayer *)layer {
     layer.cornerRadius = 4.0f;
     // Honor WarmGray80, #EEEEEE
-    layer.backgroundColor = [UIColor colorWithRed: 238.0f green: 238.0f blue: 238.0f alpha: 1.0f].CGColor;
+    layer.backgroundColor = [UIColor colorWithRed: 0.93f green: 0.93f blue: 0.93f alpha: 1.0f].CGColor;
 }
 
 - (void)setArrowFrame {
@@ -797,7 +799,9 @@
     // Get the index of the selected segment
     NSInteger segment = [self calculateSelectedSegmentPosition:touch];
     // Show pressed down state
-    [self.touchDownIndicatorLayers[segment] setOpacity: 1.0];
+    if (self.touchDownIndicatorLayers.count > segment) {
+        [self.touchDownIndicatorLayers[segment] setOpacity: 1.0];
+    }
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
